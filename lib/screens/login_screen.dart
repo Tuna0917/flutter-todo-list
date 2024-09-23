@@ -1,15 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todo_list/screens/list_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
+  Future setLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLogin', true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return const Scaffold(
-      body: Center(
-        child: Text('LoginScreen'),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Login'),
       ),
+      body: Center(
+          child: Container(
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+        width: MediaQuery.of(context).size.width * 0.85,
+        child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(129, 98, 66, 204)),
+            onPressed: () {
+              setLogin().then((_) => Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => const ListScreen()),
+                  ));
+            },
+            child: const Text(
+              '로그인',
+              style: TextStyle(color: Colors.white),
+            )),
+      )),
     );
   }
 }
