@@ -101,7 +101,12 @@ class _ListScreenState extends State<ListScreen> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: const Text('취소'),
+                      child: const Text(
+                        '취소',
+                        style: TextStyle(
+                          color: Colors.red,
+                        ),
+                      ),
                     )
                   ],
                 );
@@ -144,7 +149,71 @@ class _ListScreenState extends State<ListScreen> {
                         Container(
                           padding: const EdgeInsets.all(5),
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    int? id = todos[index].id;
+                                    String title = todos[index].title;
+                                    String description =
+                                        todos[index].description;
+                                    return AlertDialog(
+                                      title: const Text('할 일 수정하기'),
+                                      content: SizedBox(
+                                        height: 200,
+                                        child: Column(
+                                          children: [
+                                            TextField(
+                                              onChanged: (value) {
+                                                title = value;
+                                              },
+                                              decoration: InputDecoration(
+                                                hintText: todos[index].title,
+                                              ),
+                                            ),
+                                            TextField(
+                                              onChanged: (value) {
+                                                description = value;
+                                              },
+                                              decoration: InputDecoration(
+                                                hintText:
+                                                    todos[index].description,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () async {
+                                            Todo changedTodo = Todo(
+                                              id: id,
+                                              title: title,
+                                              description: description,
+                                            );
+                                            setState(() {
+                                              todoDefault
+                                                  .updateTodo(changedTodo);
+                                            });
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text('수정'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text(
+                                            '취소',
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    );
+                                  });
+                            },
                             child: const Icon(Icons.edit),
                           ),
                         )
