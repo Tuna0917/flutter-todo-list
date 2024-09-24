@@ -85,6 +85,17 @@ class _ListScreenState extends State<ListScreen> {
                   actions: [
                     TextButton(
                       onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text(
+                        '취소',
+                        style: TextStyle(
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
                         setState(() {
                           {
                             if (kDebugMode) debugPrint("[UI] ADD");
@@ -95,19 +106,11 @@ class _ListScreenState extends State<ListScreen> {
                         });
                         Navigator.of(context).pop();
                       },
-                      child: const Text('추가'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
                       child: const Text(
-                        '취소',
-                        style: TextStyle(
-                          color: Colors.red,
-                        ),
+                        '추가',
+                        style: TextStyle(color: Colors.green),
                       ),
-                    )
+                    ),
                   ],
                 );
               });
@@ -197,7 +200,11 @@ class _ListScreenState extends State<ListScreen> {
                                             });
                                             Navigator.of(context).pop();
                                           },
-                                          child: const Text('수정'),
+                                          child: const Text(
+                                            '수정',
+                                            style:
+                                                TextStyle(color: Colors.blue),
+                                          ),
                                         ),
                                         TextButton(
                                           onPressed: () {
@@ -215,6 +222,48 @@ class _ListScreenState extends State<ListScreen> {
                                   });
                             },
                             child: const Icon(Icons.edit),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(5),
+                          child: InkWell(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('ToDo 삭제하기'),
+                                      content: Container(
+                                        child: const Text('삭제하시겠습니까?'),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () async {
+                                            setState(() {
+                                              todoDefault.deleteTodo(
+                                                  todos[index].id ?? 0);
+                                              Navigator.of(context).pop();
+                                            });
+                                          },
+                                          child: const Text(
+                                            '삭제',
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text('취소'),
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            },
+                            child: const Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ),
                           ),
                         )
                       ],
