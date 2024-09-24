@@ -1,9 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_list/models/todo.dart';
-import 'package:todo_list/providers/todo_default.dart';
+import 'package:todo_list/providers/todo_sqlite.dart';
 
 class ListScreen extends StatefulWidget {
   const ListScreen({super.key});
@@ -16,16 +15,23 @@ class ListScreen extends StatefulWidget {
 
 class _ListScreenState extends State<ListScreen> {
   List<Todo> todos = [];
-  TodoDefault todoDefault = TodoDefault();
+  TodoSqlite todoSqlite = TodoSqlite();
   bool isLoading = true;
+
+  Future initDb() async {
+    await todoSqlite.initDb().then((_) async {
+      todos = await todoSqlite.getTodos();
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 2), () {
-      todos = todoDefault.getTodos();
-      setState(() {
-        isLoading = false;
+      initDb().then((_) {
+        setState(() {
+          isLoading = false;
+        });
       });
     });
   }
@@ -95,14 +101,13 @@ class _ListScreenState extends State<ListScreen> {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        Todo newTodo =
+                            Todo(title: title, description: description);
+                        await todoSqlite.addTodo(newTodo);
+                        List<Todo> newTodos = await todoSqlite.getTodos();
                         setState(() {
-                          {
-                            if (kDebugMode) debugPrint("[UI] ADD");
-                            todoDefault.addTodo(
-                              Todo(title: title, description: description),
-                            );
-                          }
+                          todos = newTodos;
                         });
                         Navigator.of(context).pop();
                       },
@@ -194,9 +199,12 @@ class _ListScreenState extends State<ListScreen> {
                                               title: title,
                                               description: description,
                                             );
+                                            await todoSqlite
+                                                .updateTodo(changedTodo);
+                                            List<Todo> newTodos =
+                                                await todoSqlite.getTodos();
                                             setState(() {
-                                              todoDefault
-                                                  .updateTodo(changedTodo);
+                                              todos = newTodos;
                                             });
                                             Navigator.of(context).pop();
                                           },
@@ -239,11 +247,14 @@ class _ListScreenState extends State<ListScreen> {
                                       actions: [
                                         TextButton(
                                           onPressed: () async {
+                                            await todoSqlite.deleteTodo(
+                                                todos[index].id ?? 0);
+                                            List<Todo> newTodos =
+                                                await todoSqlite.getTodos();
                                             setState(() {
-                                              todoDefault.deleteTodo(
-                                                  todos[index].id ?? 0);
-                                              Navigator.of(context).pop();
+                                              todos = newTodos;
                                             });
+                                            Navigator.of(context).pop();
                                           },
                                           child: const Text(
                                             '삭제',

@@ -1,5 +1,6 @@
 import 'package:todo_list/models/todo.dart';
 
+// deprecated
 class TodoDefault {
   List<Todo> dummyTodos = [
     Todo(id: 1, title: '플러터 공부 시작하기', description: '뽕봅플을 읽어봅시다.'),
