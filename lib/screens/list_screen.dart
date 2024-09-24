@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:todo_list/models/todo.dart';
+import 'package:todo_list/providers/todo_default.dart';
 
 class ListScreen extends StatefulWidget {
   const ListScreen({super.key});
@@ -17,8 +20,11 @@ class _ListScreenState extends State<ListScreen> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      isLoading = false;
+    Timer(const Duration(seconds: 2), () {
+      todos = TodoDefault().getTodos();
+      setState(() {
+        isLoading = false;
+      });
     });
   }
 
