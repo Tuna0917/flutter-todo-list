@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_list/models/todo.dart';
 import 'package:todo_list/providers/todo_default.dart';
@@ -15,13 +16,14 @@ class ListScreen extends StatefulWidget {
 
 class _ListScreenState extends State<ListScreen> {
   List<Todo> todos = [];
+  TodoDefault todoDefault = TodoDefault();
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 2), () {
-      todos = TodoDefault().getTodos();
+      todos = todoDefault.getTodos();
       setState(() {
         isLoading = false;
       });
@@ -50,7 +52,61 @@ class _ListScreenState extends State<ListScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                String title = '';
+                String description = '';
+                return AlertDialog(
+                  title: const Text('ToDo 추가하기'),
+                  content: SizedBox(
+                    height: 200,
+                    child: SizedBox(
+                      height: 200,
+                      child: Column(
+                        children: [
+                          TextField(
+                            onChanged: (value) {
+                              title = value;
+                            },
+                            decoration: const InputDecoration(labelText: '제목'),
+                          ),
+                          TextField(
+                            onChanged: (value) {
+                              description = value;
+                            },
+                            decoration: const InputDecoration(labelText: '설명'),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          {
+                            if (kDebugMode) debugPrint("[UI] ADD");
+                            todoDefault.addTodo(
+                              Todo(title: title, description: description),
+                            );
+                          }
+                        });
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('추가'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('취소'),
+                    )
+                  ],
+                );
+              });
+        },
         child: const Text('+', style: TextStyle(fontSize: 25)),
       ),
       body: isLoading
@@ -82,7 +138,8 @@ class _ListScreenState extends State<ListScreen> {
               separatorBuilder: (context, index) {
                 return const Divider();
               },
-              itemCount: todos.length),
+              itemCount: todos.length,
+            ),
     );
   }
 }
