@@ -9,6 +9,7 @@ class Todo {
     required this.description,
   });
 
+  // 주고받는 양식은 Json -> Map<String, dynamic>
   Map<String, dynamic> toMap() {
     return {
       'id': id,
