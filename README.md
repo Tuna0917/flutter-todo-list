@@ -16,3 +16,13 @@
     6. Todo 삭제하기(sqlite / Firebase)
     7. Todo 수정하기(sqlite / Firebase)
     8. 뉴스 가져와서 보여주기(API)
+
+
+## Firebase
+
+```bash
+# zsh
+flutterfire configure
+```
+
+https://firebase.google.com/docs/flutter/setup?hl=ko&platform=ios
